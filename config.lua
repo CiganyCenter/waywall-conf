@@ -4,7 +4,7 @@ local config_path = os.getenv("HOME") .. "/.config/waywall/"
 
 return {
 	input = {
-        layout = "us,ru",
+        layout = "us",
         options = "caps:none, grp:alt_shift_toggle",
         
         confine_pointer = false,
@@ -13,57 +13,35 @@ return {
         background = "#00000000",
         ninb_anchor = "topleft",
         ninb_opacity = 0.9,
-    },
+	},
 	key = {
-		thin = "*-X",
-		tall = "Alt_L",
-		wide = "*-Hyper_L",
-		toggle_ninbot = "N",
-		launch_paceman = "Ctrl-Shift-P",
+		thin = "*-V",
+		tall = "*-G",
+		wide = "*-B",
+		toggle_ninbot = "alt_l",
+		launch_paceman = "Shift-P",
 		toggle_nbtracker = "Shift-N",
 		ensure_running = "Ctrl-R",
-		fullscreen = "F11",
+		fullscreen = "Shift-L",
 		chat_key1 = "Return",
 		chat_key2 = "Slash",
-		mpk = {
-			launch = "F9",
-			quit = "F10",
-			load = "W"
-		},
+--		mpk = {
+--			launch = "F9",
+--			quit = "F10",
+--			load = "W"
+--		}i,
 		takeabreak = "Escape"
 	},
 	remap = {
-		default = {
-			-- f3 on mouse
-			["MB5"] = "F3",
-		
-			-- z <-> left shift (easier pie)
-			["Z"] = "LeftShift",
-			["LeftShift"] = "Z",
-		
-			-- d <-> x; f <-> r; t <-> a (easier f3 kb)
-			["D"] = "X",
-			["X"] = "D",
-			["F"] = "R",
-			["R"] = "F",
-			["T"] = "A",
-			["A"] = "T",
-
-			-- q <-> o (search crafting)
-			["Q"] = "O",
-			["O"] = "Q",
-		}
+    		default = {
+        		["TAB"] = "F3",
+    		},
 	},
-	dpi = {
-		id = "G304",
-		normal = 4200,
-		tall = 400,
+	sens = {
+	 	-- 0.027169363839285716 ingame (godsens)
+		normal = 8.00801619,
+	 	tall = 0.54021598,
 	},
-	-- sens = {
-	-- 	-- 0.058765005 ingame (godsens)
-	-- 	normal = 4.2,
-	-- 	tall = 0.4,
-	-- },
 	path = {
 		pacem = home_path .. "paceman-tracker-0.7.0.jar",
 		nb = home_path .. "Ninjabrain-Bot-1.5.2.jar",
