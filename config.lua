@@ -1,4 +1,6 @@
 -- ==== KEYS ====
+local config_path = os.getenv("HOME") .. "/.config/waywall/"
+
 return {
 	input = {
         layout = "us",
