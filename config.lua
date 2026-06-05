@@ -5,6 +5,8 @@ return {
 	input = {
         layout = "us",
         options = "caps:none, grp:alt_shift_toggle",
+	repeat_rate = 40,
+	repeat_delay = 300,
         
         confine_pointer = false,
 	},
