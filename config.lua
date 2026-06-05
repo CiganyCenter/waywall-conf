@@ -25,11 +25,6 @@ return {
 		fullscreen = "Shift-L",
 		chat_key1 = "Return",
 		chat_key2 = "Slash",
---		mpk = {
---			launch = "F9",
---			quit = "F10",
---			load = "W"
---		}i,
 		takeabreak = "Escape"
 	},
 	remap = {

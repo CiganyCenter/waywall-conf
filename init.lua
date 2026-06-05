@@ -252,8 +252,6 @@ config.actions = {
     ["Slash"] = chat_key("Slash"),
 }
 
-u.mpk(c.key.mpk, config)
-
 waywall.listen("load", function()
     res_disable()
     waywall.sleep(5000)
@@ -274,10 +272,6 @@ waywall.listen("state", function()
         waywall.set_remaps(c.remap.default)
         chat_text(false)
         active_remap = "default"
-        if u.starting_mpk then
-            u.starting_mpk = false
-            waywall.press_key(c.key.mpk.load)
-        end
     end
     if state.screen ~= "inworld" then
         waywall.set_remaps({})
