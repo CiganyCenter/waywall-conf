@@ -6,11 +6,9 @@ import tkinter as tk
 import threading
 import time
 import math
+import colorsys
 
 NBB_EVENTS_URL = "http://localhost:52533/api/v1/stronghold/events"
-
-# Colors for top 3 predictions
-ROW_COLORS = ["#00DD00", "#DDDD00", "#DD0000"]
 
 # Pure black background for darkwindow shader to key out
 BG_COLOR = "#000000"
@@ -44,6 +42,10 @@ def format_row(prediction, player_pos):
 
     return f"{certainty:.1f}%  ({x}, {z})  {dist}{angle_str}"
 
+def certainty_to_color(certainty):
+    hue = certainty * (120 / 360)
+    r, g, b = colorsys.hsv_to_rgb(hue, 1.0, 0.87)
+    return f"#{int(r * 255):02X}{int(g * 255):02X}{int(b * 255):02X}"
 
 class NBTrackr:
     def __init__(self):
@@ -92,7 +94,10 @@ class NBTrackr:
 
         for i in range(3):
             if i < rows:
-                self.labels[i].config(text=format_row(predictions[i], player_pos))
+                self.labels[i].config(
+                    text=format_row(predictions[i], player_pos),
+                    fg=certainty_to_color(predictions[i]["certainty"]),
+                )
                 self.labels[i].pack(anchor="w")
             else:
                 self.labels[i].pack_forget()
