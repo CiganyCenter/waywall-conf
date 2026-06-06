@@ -64,7 +64,7 @@ class NBTrackr:
                 self.root,
                 text="",
                 font=FONT,
-                fg=ROW_COLORS[i],
+                fg="#FFFFFF",
                 bg=BG_COLOR,
                 anchor="w",
                 padx=PADDING_X,
