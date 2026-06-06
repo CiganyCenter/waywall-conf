@@ -17,8 +17,8 @@ return {
 	},
 	key = {
 		thin = "*-V",
-		tall = "*-G",
-		wide = "*-B",
+		tall = "G",
+		wide = "B",
 		toggle_ninbot = "alt_l",
 		launch_paceman = "Shift-P",
 		toggle_nbtracker = "Shift-N",

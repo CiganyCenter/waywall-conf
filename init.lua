@@ -26,7 +26,7 @@ local ensure_running = function()
         waywall.exec("python3 " .. c.path.solaar .. " " .. c.dpi.id .. " DPI")
         return true
     end
-    if not u.is_running("NBTrackr.*\\.py") then
+    if not u.is_running("nbtrackr") then
         -- hyprctl dispatch exec to fix x11 issue
         waywall.exec("hyprctl dispatch exec nbtrackr")
         waywall.sleep(6000)
