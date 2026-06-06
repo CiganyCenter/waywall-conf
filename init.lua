@@ -26,8 +26,7 @@ local ensure_running = function()
         waywall.exec("python3 " .. c.path.solaar .. " " .. c.dpi.id .. " DPI")
         return true
     end
-    if not u.is_running("nbtrackr") then
-        -- hyprctl dispatch exec to fix x11 issue
+    if not u.is_running("python3.*nbtrackr") then
         waywall.exec("hyprctl dispatch exec nbtrackr")
         waywall.sleep(6000)
         waywall.exec("hyprctl dispatch tagwindow +nboverlay class:Tk")
@@ -224,8 +223,14 @@ config.shaders = {
 
 config.actions = {
     [c.key.thin] = u.ingame_only(resolutions.thin),
-    [c.key.tall] = resolutions.tall,
-    [c.key.wide] = u.ingame_only(resolutions.wide),
+    [c.key.tall] = function()
+    	if waywall.get_key("F3") then return false end
+    	return resolutions.tall()
+    end,
+    [c.key.wide] = u.ingame_only(function()
+    	if waywall.get_key("F3") then return false end
+    	return resolutions.wide()
+    end),
 
     [c.key.toggle_ninbot] = function()
         -- ensure_running()
@@ -240,7 +245,7 @@ config.actions = {
     end,
 
     [c.key.toggle_nbtracker] = function()
-        waywall.exec("pkill -f NBTrackr.*\\.py")
+        waywall.exec("pkill -f nbtrackr")
     end,
 
     [c.key.fullscreen] = waywall.toggle_fullscreen,
