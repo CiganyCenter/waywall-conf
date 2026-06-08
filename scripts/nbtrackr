@@ -30,21 +30,26 @@ def format_row(prediction, player_pos):
     chunk_z = prediction["chunkZ"]
     dist = int(prediction["overworldDistance"])
 
-    x = chunk_x * 16 + 8
-    z = chunk_z * 16 + 8
+    x = chunk_x * 16 + 4
+    z = chunk_z * 16 + 4
+
+    nether_x = chunk_x * 2
+    nether_z = chunk_z * 2
+    nether_dist = int(prediction["overworldDistance"] / 8)
 
     angle_str = ""
-    if (player_pos and "xInOverworld" in player_pos
-        and "zInOverworld" in player_pos 
-        and "horizontalAngle" in player_pos):
+    if (player_pos 
+            and "xInOverworld" in player_pos
+            and "zInOverworld" in player_pos 
+            and "horizontalAngle" in player_pos):
         dx = x - player_pos["xInOverworld"]
         dz = z - player_pos["zInOverworld"]
         bearing = math.degrees(math.atan2(-dx, dz))
         deviation = ((bearing - player_pos["horizontalAngle"] + 180) % 360) - 180
         arrow = "->" if deviation >= 0 else "<-"
-        angle_str = f" ({arrow}{abs(deviation):.1f})"
+        angle_str = f" ({arrow}{abs(deviation):3.1f})"
 
-    return f"{certainty:.1f}%  ({x}, {z})  {dist}{angle_str}"
+    return f"{certainty:5.1f}%  ({nether_x}, {nether_z})  {nether_dist:3}{angle_str}"
 
 def certainty_to_color(certainty):
     hue = certainty * (120 / 360)
@@ -130,7 +135,7 @@ class NBTrackr:
                                 self.root.after(0, self.update_display, data)
                             except json.JSONDecodeError:
                                 pass
-            except Exception:
+            except Exception as e:
                 print(f"[sse error] {type(e).__name__}: {e}", flush=True)
                 self.root.after(0, self._hide)
                 time.sleep(3)
