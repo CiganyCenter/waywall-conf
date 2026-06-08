@@ -34,11 +34,15 @@ def format_row(prediction, player_pos):
     z = chunk_z * 16 + 8
 
     angle_str = ""
-    if player_pos and "xInOverworld" in player_pos and "zInOverworld" in player_pos:
+    if (player_pos and "xInOverworld" in player_pos
+        and "zInOverworld" in player_pos 
+        and "horizontalAngle" in player_pos):
         dx = x - player_pos["xInOverworld"]
         dz = z - player_pos["zInOverworld"]
-        angle = math.degrees(math.atan2(dx, -dz))
-        angle_str = f" (-> {angle:.1f})"
+        bearing = math.degrees(math.atan2(-dx, dz))
+        deviation = ((bearing - player_pos["horizontalAngle"] + 180) % 360) - 180
+        arrow = "->" if deviation >= 0 else "<-"
+        angle_str = f" ({arrow}{abs(deviation):.1f})"
 
     return f"{certainty:.1f}%  ({x}, {z})  {dist}{angle_str}"
 
