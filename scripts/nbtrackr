@@ -80,6 +80,7 @@ class NBTrackr:
     def update_display(self, data):
         result_type = data.get("resultType", "NONE")
         predictions = data.get("predictions", [])
+        print(f"[update] resultType={result_type} predictions={len(predictions)}", flush=True)
         player_pos = data.get("playerPosition", {})
 
         if result_type == "NONE" or not predictions:
@@ -126,6 +127,7 @@ class NBTrackr:
                             except json.JSONDecodeError:
                                 pass
             except Exception:
+                print(f"[sse error] {type(e).__name__}: {e}", flush=True)
                 self.root.after(0, self._hide)
                 time.sleep(3)
 
