@@ -14,10 +14,11 @@ NBB_EVENTS_URL = "http://localhost:52533/api/v1/stronghold/events"
 BG_COLOR = "#000000"
 
 FONT = ("Minecraft Default", 18, "bold")
-LINE_HEIGHT = 40
-PADDING_Y = 4
+LINE_HEIGHT = 20
+PADDING_Y = 1
 WINDOW_WIDTH = 420
-COL_X = [4, 115, 250, 305]  # certainty | coords | distance | angle
+COL_X = [5, 115, 250, 305]  # certainty | coords | distance | angle
+COL_WIDTHS = [COL_X[i+1] - COL_X[i] for i in range(3)] + [WINDOW_WIDTH - COL_X[3]]
 
 SCREEN_X = 1350
 SCREEN_Y = 1000
@@ -77,7 +78,7 @@ class NBTrackr:
                     font=FONT,
                     fg="#FFFFFF",
                     bg=BG_COLOR,
-                    anchor="w",
+                    anchor="center",
                     padx=0,
                 )
                 row_cells.append(lbl)
@@ -109,7 +110,7 @@ class NBTrackr:
                 color = certainty_to_color(predictions[i]["certainty"])
                 for col in range(4):
                     self.cells[i][col].config(text=row_data[col], fg=color)
-                    self.cells[i][col].place(x=COL_X[col], y=PADDING_Y + i * LINE_HEIGHT)
+                    self.cells[i][col].place(x=COL_X[col], y=PADDING_Y + i * LINE_HEIGHT, width=COL_WIDTHS[col])
             else:
                 for col in range(4):
                     self.cells[i][col].place_forget()
