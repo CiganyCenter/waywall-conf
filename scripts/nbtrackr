@@ -7,7 +7,6 @@ import threading
 import time
 import math
 import colorsys
-import subprocess
 
 NBB_EVENTS_URL = "http://localhost:52533/api/v1/stronghold/events"
 
@@ -16,10 +15,9 @@ BG_COLOR = "#000000"
 
 FONT = ("Minecraft Default", 18, "bold")
 LINE_HEIGHT = 40
-PADDING_X = 4
 PADDING_Y = 4
 WINDOW_WIDTH = 420
-
+COL_X = [4, 115, 250, 305]  # certainty | coords | distance | angle
 
 SCREEN_X = 1350
 SCREEN_Y = 1000
@@ -29,7 +27,6 @@ def format_row(prediction, player_pos):
     certainty = prediction["certainty"] * 100
     chunk_x = prediction["chunkX"]
     chunk_z = prediction["chunkZ"]
-    dist = int(prediction["overworldDistance"])
 
     x = chunk_x * 16 + 4
     z = chunk_z * 16 + 4
@@ -38,24 +35,26 @@ def format_row(prediction, player_pos):
     nether_z = chunk_z * 2
     nether_dist = int(prediction["overworldDistance"] / 8)
 
-    angle_str = ""
-    if (player_pos 
+    col4 = ""
+    if (player_pos
             and "xInOverworld" in player_pos
-            and "zInOverworld" in player_pos 
+            and "zInOverworld" in player_pos
             and "horizontalAngle" in player_pos):
         dx = x - player_pos["xInOverworld"]
         dz = z - player_pos["zInOverworld"]
         bearing = math.degrees(math.atan2(-dx, dz))
         deviation = ((bearing - player_pos["horizontalAngle"] + 180) % 360) - 180
         arrow = "->" if deviation >= 0 else "<-"
-        angle_str = f" ({arrow}{abs(deviation):3.1f})"
+        col4 = f"({arrow}{abs(deviation):.1f})"
 
-    return f"{certainty:5.1f}%  ({nether_x}, {nether_z})  {nether_dist:3}{angle_str}"
+    return (f"{certainty:.1f}%", f"({nether_x}, {nether_z})", str(nether_dist), col4)
+
 
 def certainty_to_color(certainty):
     hue = certainty * (120 / 360)
     r, g, b = colorsys.hsv_to_rgb(hue, 1.0, 0.87)
     return f"#{int(r * 255):02X}{int(g * 255):02X}{int(b * 255):02X}"
+
 
 class NBTrackr:
     def __init__(self):
@@ -68,19 +67,21 @@ class NBTrackr:
         self.root.attributes("-topmost", True)
         self.root.withdraw()
 
-        self.labels = []
-        for i in range(3):
-            lbl = tk.Label(
-                self.root,
-                text="",
-                font=FONT,
-                fg="#FFFFFF",
-                bg=BG_COLOR,
-                anchor="w",
-                padx=PADDING_X,
-            )
-            lbl.pack(anchor="w")
-            self.labels.append(lbl)
+        self.cells = []
+        for row in range(3):
+            row_cells = []
+            for col in range(4):
+                lbl = tk.Label(
+                    self.root,
+                    text="",
+                    font=FONT,
+                    fg="#FFFFFF",
+                    bg=BG_COLOR,
+                    anchor="w",
+                    padx=0,
+                )
+                row_cells.append(lbl)
+            self.cells.append(row_cells)
 
         self.visible = False
 
@@ -90,7 +91,6 @@ class NBTrackr:
     def update_display(self, data):
         result_type = data.get("resultType", "NONE")
         predictions = data.get("predictions", [])
-        print(f"[update] resultType={result_type} predictions={len(predictions)}", flush=True)
         player_pos = data.get("playerPosition", {})
 
         if result_type == "NONE" or not predictions:
@@ -105,13 +105,14 @@ class NBTrackr:
 
         for i in range(3):
             if i < rows:
-                self.labels[i].config(
-                    text=format_row(predictions[i], player_pos),
-                    fg=certainty_to_color(predictions[i]["certainty"]),
-                )
-                self.labels[i].pack(anchor="w")
+                row_data = format_row(predictions[i], player_pos)
+                color = certainty_to_color(predictions[i]["certainty"])
+                for col in range(4):
+                    self.cells[i][col].config(text=row_data[col], fg=color)
+                    self.cells[i][col].place(x=COL_X[col], y=PADDING_Y + i * LINE_HEIGHT)
             else:
-                self.labels[i].pack_forget()
+                for col in range(4):
+                    self.cells[i][col].place_forget()
 
         if not self.visible:
             self.root.deiconify()
